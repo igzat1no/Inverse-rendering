@@ -1,0 +1,4 @@
+data:
+  dir: './data/nerf_synthetic/materials'
+  downsample: 1.0
+  debug: False

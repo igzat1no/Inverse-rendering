@@ -1,0 +1,3 @@
+data:
+  dir: './data/nerf_synthetic/lego'
+  downsample: 1.0

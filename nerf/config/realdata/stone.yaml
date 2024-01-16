@@ -1,0 +1,3 @@
+data:
+  dir: './data/realdata'
+  downsample: 4.0

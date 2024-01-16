@@ -1,0 +1,4 @@
+data:
+  dir: './data/tensoir/ficus'
+  downsample: 1.0
+  debug: False

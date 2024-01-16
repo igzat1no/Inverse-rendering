@@ -1,0 +1,79 @@
+iteration: 30000
+
+N_voxel_init: 2097152  # 128**3
+N_voxel_final: 27000000  # 300**3
+
+upsample:
+  iteration:
+    - 2000
+    - 3000
+    - 4000
+    - 5500
+    - 7000
+  lr_reset: True
+
+update_AlphaMask_list:
+  - 2000
+  - 4000
+
+model:
+  nSamples: 1000000
+
+  density:
+    distance_scale: 25
+    density_shift: -10
+    n_comp: [16, 16, 16]
+    fea2dense: softplus
+
+  app:
+    feature_dim: 12  # data_dim_color
+    n_comp: [48, 48, 48]
+
+  render:
+    name: MLP_Fea
+    pos_pe: 4
+    fea_pe: 2
+    view_pe: 6
+    featureC: 128
+
+  loss:
+    ortho_reg_weight: 0.0
+    l1_weight_initial: 8e-5
+    l1_weight_rest: 4e-5
+    tv_weight_density: 0.0
+    tv_weight_app: 0.0
+    rm_weight_mask_thre: 1e-4
+
+  alpha_mask_thre: 0.0001
+  step_ratio: 0.5
+  occ_grid_reso: 128
+  ndc_ray: 0
+
+  use_sigma: True
+  use_rgb_sigma: True
+
+
+optimizer:
+  name: Adam
+  lr_init: 0.02
+  lr_basis: 0.001
+  params:
+    betas: [0.9, 0.999]
+
+lr_decay: 0.1
+warmup_steps: ${iteration}
+lr_factor: ${calc_exp_lr_decay_rate:${lr_decay},${warmup_steps}}
+
+scheduler:
+  name: SequentialLR
+  schedulers:
+    - name: ExponentialLR
+      params:
+        gamma: ${lr_factor}
+    - name: ConstantLR
+      params:
+        factor: ${lr_decay}
+        total_iters: ${iteration}
+  params:
+    milestones:
+      - ${warmup_steps}

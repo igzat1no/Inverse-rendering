@@ -1,0 +1,4 @@
+data:
+  dir: './data/tensoir/lego'
+  downsample: 1.0
+  debug: False

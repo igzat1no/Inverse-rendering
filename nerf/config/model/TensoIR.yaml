@@ -1,0 +1,108 @@
+seed: 20211202
+batch_size: 4096
+iteration: 80000
+vis_freq: 15000
+N_voxel_init: 2097152
+N_voxel_final: 27000000
+
+upsample:
+  iteration:
+    - 10000
+    - 20000
+    - 30000
+    - 40000
+  lr_reset: True
+
+update_AlphaMask_list:
+  - 10000
+  - 15000
+  - 20000
+  - 25000
+  - 30000
+  - 35000
+
+optimizer:
+  name: Adam
+  lr_xyz: 0.02
+  lr_net: 0.001
+  params:
+    betas: [0.9, 0.99]
+
+lr_decay: 0.1
+warmup_steps: ${iteration}
+lr_factor: ${calc_exp_lr_decay_rate:${lr_decay},${warmup_steps}}
+
+scheduler:
+  name: SequentialLR
+  schedulers:
+    - name: ExponentialLR
+      params:
+        gamma: ${lr_factor}
+    - name: ConstantLR
+      params:
+        factor: ${lr_decay}
+        total_iters: ${iteration}
+  params:
+    milestones:
+      - ${warmup_steps}
+
+
+model:
+  relight_flag: False
+
+  density:
+    distance_scale: 25
+    density_shift: -10
+    n_comp: [16, 16, 16]
+    fea2dense: softplus
+
+  app:
+    feature_dim: 27  # data_dim_color
+    n_comp: [48, 48, 48]
+
+  render:
+    name: MLP_Fea
+    pos_pe: 2
+    fea_pe: 2
+    view_pe: 2
+    featureC: 128
+
+  light:
+    light_kind: sg
+    envmap_w: 32
+    envmap_h: 16
+    numLgtSGs: 128
+    rotation:
+      - 0
+
+  loss:
+    ortho_reg_weight: 0.0
+    l1_weight_initial: 8e-5
+    l1_weight_rest: 4e-5
+    tv_weight_density: 0.05
+    tv_weight_app: 0.005
+    rm_weight_mask_thre: 1e-4
+
+  nSamples: 1000000
+  alpha_mask_thre: 0.0001
+  step_ratio: 0.5
+  occ_grid_reso: 128
+  ndc_ray: 0
+  normals_kind: derived_plus_predicted
+  fixed_fresnel: 0.04
+
+  light_sample_train: stratified_sampling
+  relight_chunk_size: 160000
+  normals_loss_enhance_ratio: 1
+
+  normals_diff_weight: 0.0004
+  normals_orientation_weight: 0.001
+  rgb_brdf_weight: 0.2
+  albedo_smoothness_loss_weight: 0.001
+  roughness_smoothness_loss_weight: 0.001
+
+  BRDF_loss_enhance_ratio: 1.0
+
+  second_nSample: 96
+  second_near: 0.05
+  second_far: 1.5

@@ -1,0 +1,27 @@
+datadir : './data/nerf_synthetic/lego'
+
+upsamp_list : [2000, 3000, 4000, 5500, 7000]
+update_AlphaMask_list : [2000, 4000]
+
+shadingMode : 'MLP_Fea'
+fea2denseAct : 'softplus'
+
+view_pe : 2
+fea_pe : 2
+
+
+dataset_conf:
+    name: blender
+    scene: lego
+    root_dir: ./data/nerf_synthetic/lego
+    img_wh:
+        - 800
+        - 800
+    # img_downscale: 1 # specify training image size by either img_wh or img_downscale
+    near_plane: 2.0
+    far_plane: 6.0
+    spheric_poses: false
+    use_pixel_centers: true
+    train_split: 'train'
+    val_split: 'val'
+    test_split: 'test'

@@ -1,0 +1,3 @@
+data:
+  dir: './data/nerf_synthetic/chair'
+  downsample: 1.0

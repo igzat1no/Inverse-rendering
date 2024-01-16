@@ -1,0 +1,37 @@
+# general options
+exp: 'default'
+test_only: False
+logdir: './logs'
+gpu: 0
+seed: 42
+no_backup: True
+
+# wandb options
+wandb: False
+tags: []
+notes: ''
+
+# training options
+batch_size: 4096
+iteration: 20000
+
+vis_freq: 10000
+N_vis: 5
+
+model:
+  name: TensoIR
+  sampler: occgrid
+
+# data options
+data:
+  name: tensoir_synthetic
+  type: lego
+  downsample: 1
+
+# render options
+render_train: False
+render_test: False
+
+# scheduler
+scheduler:
+  name: None

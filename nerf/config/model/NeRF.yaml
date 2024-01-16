@@ -1,0 +1,20 @@
+iteration: 50000
+
+model:
+  occ_grid_reso: 128
+  render_step_size: 5e-3
+
+optimizer:
+  name: Adam
+  params:
+    lr: 5e-4
+
+scheduler:
+  name: MultiStepLR
+  params:
+    milestones:
+      - ${eval:${iteration} // 2}
+      - ${eval:${iteration} * 3 // 4}
+      - ${eval:${iteration} * 5 // 6}
+      - ${eval:${iteration} * 9 // 10}
+    gamma: 0.33

@@ -1,0 +1,114 @@
+# general options
+exp: 'default'
+test_only: False
+ckpt: ''
+logdir: './logs'
+gpu: 0
+seed: 42
+no_backup: False
+
+# wandb options
+wandb: False
+tags: []
+notes: ''
+
+# training options
+batch_size: 1
+iteration: 10000
+
+vis_freq: 10000
+N_vis: 5
+
+# data options
+data:
+  name: tensoir_synthetic
+  type: lego
+  anti_aliasing: False
+  anti_aliasing_mode: bilinear
+  resolution: [800, 800]
+  bg_type: random
+  downsample: 4
+  white_bg: True
+  crop_train: True
+  crop_val: True
+
+# model options
+model:
+  geo_model:
+    # name: NeuS
+    # ckpt: ./logs/neus-lego/2023_07_13_17_01_35/model.pth
+    name: TensoIR
+    ckpt: ./logs/hotdog-tensoir/2023_08_18_00_11_21/model.pt
+    # ckpt: ./logs/tensoir-new-lego-occgrid/2023_07_03_20_25_17/model.pt
+    # ckpt: ./logs/tensoir-lego-occgrid/2023_06_29_12_38_27/model.pt
+    sampler: occgrid
+    # ckpt: ./logs/TensorVM_chair/2023_05_28_14_17_37/final.pth
+
+  app_model:
+    name: TensoIR
+    ckpt: ./logs/hotdog-tensoir/2023_08_18_00_11_21/model.pt
+    # ckpt: ./logs/tensoir-new-lego-occgrid/2023_07_03_20_25_17/model.pt
+    # ckpt: ./logs/tensoir-lego-occgrid/2023_06_29_12_38_27/model.pt
+    sampler: occgrid
+    # ckpt: ./logs/tensoir-debug/model.pt
+    # ckpt: ./logs/TensorVM_chair/2023_05_28_14_17_37/final.pth
+
+  dmtet:
+    init_scale:
+    dmtet_grid: 384
+    mesh_scale: 3.0
+
+  unbounded: False
+  # tex_type: tensorVM_preload
+  tex_type: tensoIR_physical
+  tex_dim: 27
+  downsample: ${data.downsample}
+  anti_aliasing: ${data.anti_aliasing}
+  anti_aliasing_mode: ${data.anti_aliasing_mode}
+
+  sdf_grad_weight: 0.01
+  sdf_sparse_weight: 0.001
+  normal_smooth_weight: 0.0
+  albedo_loss_weight: 0
+  albedo_reg_loss_weight: 0
+  albedo_smoothness_weight: 0.1
+  roughness_smoothness_weight: 0
+  l1_reg_weight: 8e-5
+  tv_weight_density: 0.1
+  tv_weight_app: 0.01
+
+  normals_loss_enhance_ratio: 1
+
+  normals_diff_weight: 0.005
+  normals_orientation_weight: 0.005
+  rgb_brdf_weight: 0.2
+  albedo_smoothness_loss_weight: 0.01
+  roughness_smoothness_loss_weight: 0.01
+
+  BRDF_loss_enhance_ratio: 1.0
+  pos_weight: 0.0
+
+# render options
+render_train: False
+render_test: False
+
+learn_light: True
+env_scale: 1.0
+
+optimizer:
+  name: Adam
+  lr_pos: 0.01
+  lr_mat: 0.01
+  params:
+    betas: [0.9, 0.99]
+
+lr_decay: 0.01
+warmup_steps: 0
+lr_factor: ${calc_exp_lr_decay_rate:${lr_decay},${iteration}}
+
+scheduler:
+  name: ExponentialLR
+  params:
+    gamma: ${lr_factor}
+
+loss: logl1
